@@ -1,0 +1,11 @@
+bids==0.0
+matplotlib==2.2.2
+nibabel==2.4.0.dev0
+nilearn==0.6.2
+nipype==1.4.2
+numpy==1.15.4
+pandas==0.25.3
+scikit-image==0.16.2
+SimpleITK==1.1.0
+tqdm==4.49.0
+transforms3d==0.3.1
