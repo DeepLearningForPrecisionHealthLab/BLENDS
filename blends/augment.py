@@ -18,11 +18,33 @@ from .skullstrip import Robex, make_func_mask_workflow
 
 class AnatAugmenter:
     def __init__(self, output_dir):
+        """Registration-based augmenter. 
+
+        Add individual augmentation "jobs" consisting of an original fMRI/sMRI
+        pair and a registration target fMRI/sMRI pair using the add_job()
+        method. Call the run() method to execute all augmentation jobs.
+
+        Args:
+            output_dir (str): path to store processing intermediate files
+        """        
         self.strOutputDir = output_dir
         self.dfConfig = pd.DataFrame(columns=['func', 'anat', 'target_func', 'target_anat', 'output_func',
                                               'output_anat'])
 
     def add_job(self, source_func, source_anat, target_func, target_anat, output_func, output_anat):
+        """Add a registration "job" to the queue.
+
+        Args:
+            source_func (str): path to original fMRI
+            source_anat (str): path to original sMRI
+            target_func (str): path to registration target fMRI
+            target_anat (str): path to registration target sMRI
+            output_func (str): path to save transformed fMRI
+            output_anat (str): path to save transformed sMRI
+
+        Raises:
+            FileNotFoundError: one of the input file paths does not exist
+        """        
         for strFile in [source_func, source_anat, target_func, target_anat]:
             if not os.path.exists(strFile):
                 raise FileNotFoundError(strFile + ' does not exist')
@@ -38,6 +60,13 @@ class AnatAugmenter:
                                              ignore_index=True)
 
     def run(self, do_skullstrip=True, n_ants_jobs=1, n_pipeline_jobs=1):
+        """Run queued registration jobs.
+
+        Args:
+            do_skullstrip (bool, optional): whether to skullstrip images prior to registration. Defaults to True.
+            n_ants_jobs (int, optional): number of parallel threads for ANTs registration. Defaults to 1.
+            n_pipeline_jobs (int, optional): number of parallel processing jobs, this should be at least equal to n_ants_jobs. Defaults to 1.
+        """        
         if n_pipeline_jobs == 1:
             n_ants_jobs = 1
 

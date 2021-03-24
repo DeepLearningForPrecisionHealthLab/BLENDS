@@ -38,6 +38,40 @@ def _distance_transform(tupShape, arrPoints):
 
 class WarpBlender:
     def __init__(self, warp_source_dir, n_ants_jobs=8):
+        """
+        BLENDS augmentation class. Performs augmentation of brain MRI by
+        applying a random spatially blended combination of precomputed nonlinear
+        warps.
+
+        Steps:
+        1.  Use prepare_source() to skullstrip the input image and register it to the MNI template.
+        2.  Use generate_warp() to compute the new spatially blended warp.
+        3.  Call augment(). 
+
+        If augmenting a pair of fMRI/sMRI from the same subject:
+        1.  Create 2 WarpBlender objects and call prepare_source() on each image.
+        2.  Call generate_warp() on one of them, then assign the same generated warp to the other
+            WarpBlender using the arrWarpBlended attribute. E.g.::
+
+                augmenterAnat = blending.WarpBlender(...)
+                augmenterFunc = blending.WarpBlender(...)
+                augmenterAnat.prepare_source(anat_path, registration='anat')
+                augmenterFunc.prepare_source(func_path, registration='func')
+                augmenter.Func.generate_warp(...)
+                augmenterAnat.arrWarpBlended = augmenterFunc.arrWarpBlended
+
+        Dependencies required on system PATH:
+        * ANTs
+        * ROBEX
+        * FSL
+
+        Args:
+            warp_source_dir (str): path to a directory containing precomputed MNI->subject space warps in ANTs .nii or .nii.gz format.
+            n_ants_jobs (int, optional): number of parallel ANTs threads. Defaults to 8.
+
+        Raises:
+            NotADirectoryError: warp_source_dir is not a valid directory
+        """        
         if isinstance(warp_source_dir, list):
             self.warp_sources = warp_source_dir
         else:
@@ -138,6 +172,15 @@ class WarpBlender:
 
 
     def prepare_source(self, input_img, registration='func'):
+        """Skullstrip and register input image to MNI space in preparation for augmentation.
+
+        Args:
+            input_img (str): path to input image (.nii*)
+            registration (str, optional): type of input image, 'anat' or 'func'. Defaults to 'func'.
+
+        Raises:
+            ValueError: registration is an invalid value
+        """        
         # Affine register input image to MNI space
         if registration == 'func':
             self.strRegisteredPath = self._skullstrip_register_func(input_img, self.tempdir.name)
@@ -152,18 +195,13 @@ class WarpBlender:
 
 
     def generate_warp(self, n_sources=4, seed=None, verbose=False):
-        '''
-        Generates a new blended warp
-        :param n_sources:
-        :type n_sources:
-        :param seed:
-        :type seed:
-        :param verbose:
-        :type verbose:
-        :return:
-        :rtype:
-        '''
+        """Generate a blended warp.
 
+        Args:
+            n_sources (int, optional): number of existing warps to combine. Defaults to 4.
+            seed (int, optional): random seed. Defaults to None.
+            verbose (bool, optional): print execution time. Defaults to False.
+        """        
         self.n_sources = n_sources
         t0 = timeit.default_timer()
         # use make_blobs to generate isotropic clusters of points in space.
@@ -192,6 +230,14 @@ class WarpBlender:
             print('Generated in {:.03f} s'.format(timeit.default_timer() - t0))
 
     def augment(self, output_path):
+        """Perform augmentation by applying the blended warp.
+
+        Args:
+            output_path (str): output file path (.nii*)
+
+        Raises:
+            RuntimeError: generate_warp() has not been run or arrWarpBlended has not been assigned.
+        """        
         if self.arrWarpBlended is None:
             raise RuntimeError('Run generate_warp first')
 
@@ -205,4 +251,11 @@ class WarpBlender:
 
 
     def save_warp(self, save_path):
+        """Save blended warp to file.
+
+        Args:
+            save_path (str): save path (.nii*)
+        """     
+        if self.arrWarpBlended is None:
+            raise RuntimeError('Run generate_warp first')   
         transforms.save_warp(self.arrWarpBlended, arrRefWarp=self.arrWarpBlended, strOutPath=save_path)

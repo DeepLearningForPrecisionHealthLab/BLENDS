@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Docstring
+Registration pipelines for T1-weighted structural and functional images
 ______
 2/21/20
 """
@@ -17,6 +17,14 @@ from .skullstrip import Robex, make_func_mask_workflow
 
 class T1Registration:
     def __init__(self, input_anat, output_dir):
+        """Pipeline for registering T1-weighted structural images to MNI space.
+
+        Requires ANTs and ROBEX installed and on the system PATH.
+
+        Args:
+            input_anat (str): path to MRI with BIDS-compliant filename (.nii or .nii.gz)
+            output_dir (str): path for processing outputs
+        """        
         self.strOutputDir = output_dir
         self.lsInputs = input_anat
 
@@ -35,6 +43,16 @@ class T1Registration:
 
     def run(self, n_ants_jobs=1, n_pipeline_jobs=1,
             strTemplatePath=None):
+        """Perform registration.
+
+        Args:
+            n_ants_jobs (int, optional): number of parallel ANTs threads. Defaults to 1.
+            n_pipeline_jobs (int, optional): number of parallel processing jobs, should be >= n_ants_jobs. Defaults to 1.
+            strTemplatePath (str, optional): path to MNI template. Defaults to the T1-weighted template found in data/
+
+        Raises:
+            ValueError: n_ants_jobs > n_pipeline_jobs
+        """        
 
         # Use default T1w template if not specified
         if not strTemplatePath:
@@ -90,6 +108,14 @@ class T1Registration:
 
 class EPIRegistration:
     def __init__(self, input_func, output_dir):
+        """Pipeline for registering fMRI images to MNI space.
+
+        Requires ANTs and ROBEX installed and on the system PATH.
+
+        Args:
+            input_func (str): path to fMRI file (.nii or .nii.gz)
+            output_dir (str): path for processing outputs
+        """ 
         self.strOutputDir = output_dir
         self.lsInputs = input_func
 
@@ -108,6 +134,16 @@ class EPIRegistration:
 
     def run(self, n_ants_jobs=1, n_pipeline_jobs=1,
             strTemplatePath=None):
+        """Perform registration.
+
+        Args:
+            n_ants_jobs (int, optional): number of parallel ANTs threads. Defaults to 1.
+            n_pipeline_jobs (int, optional): number of parallel processing jobs, should be >= n_ants_jobs. Defaults to 1.
+            strTemplatePath (str, optional): path to MNI template. Defaults to the T1-weighted template found in data/
+
+        Raises:
+            ValueError: n_ants_jobs > n_pipeline_jobs
+        """   
 
         # Use default EPI template if not specified
         if not strTemplatePath:

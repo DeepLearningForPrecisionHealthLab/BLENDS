@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Docstring
+Nipype interface for the ROBEX skullstripping tool. 
 ______
 10/15/19
 """
