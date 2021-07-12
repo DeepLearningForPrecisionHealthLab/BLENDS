@@ -27,7 +27,7 @@ import transforms3d
 import SimpleITK as sitk
 from nipype.pipeline import MapNode, Workflow
 from nipype.interfaces import ants
-from augmentation import registration
+from blends import registration
 
 ppmi = bids.BIDSLayout(DATA_PATH, validate=False)
 
