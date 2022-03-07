@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
 Main BLENDS augmentation class.
-______
-4/13/20
+
+Copyright (c) 2022 The University of Texas Southwestern Medical Center.
 """
 __author__ = 'Kevin P Nguyen'
 __email__ = 'kevin3.nguyen@utsouthwestern.edu'

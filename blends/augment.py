@@ -4,8 +4,8 @@
 augmentation by directly registering a source brain to a selected target brain.
 Due to the multiple registration steps required, this is much slower than
 BLENDS.
-______
-6/19/19
+
+Copyright (c) 2022 The University of Texas Southwestern Medical Center.
 """
 __author__ = 'Kevin P Nguyen'
 __email__ = 'kevin3.nguyen@utsouthwestern.edu'

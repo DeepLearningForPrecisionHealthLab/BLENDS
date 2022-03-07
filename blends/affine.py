@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
 Classes for performing a simple augmentation of 3D/4D images via random affine transformations. 
-______
-10/22/19
+
+Copyright (c) 2022 The University of Texas Southwestern Medical Center.
 """
 __author__ = 'Kevin P Nguyen'
 __email__ = 'kevin3.nguyen@utsouthwestern.edu'

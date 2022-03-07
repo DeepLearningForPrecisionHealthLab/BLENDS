@@ -8,6 +8,8 @@ which combines the SMOTE linear interpolation method with the EROS (extended
 Frobenius Norm) similarity metric for multivarate timeseries. 
 
 Based on the authors' code at https://github.com/pcdslab/ASD-DiagNet
+
+Copyright (c) 2022 The University of Texas Southwestern Medical Center.
 '''
 
 import numpy as np
