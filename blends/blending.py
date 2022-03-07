@@ -241,7 +241,9 @@ class WarpBlender:
         if self.arrWarpBlended is None:
             raise RuntimeError('Run generate_warp first')
 
-        transforms.apply_warp_from_array(self.arrWarpBlended, arrRefWarp=self.arrWarpBlended,
+        transforms.apply_warp_from_array(self.arrWarpBlended, 
+                                        #  arrRefWarp=self.arrWarpBlended,
+                                         arrRefWarp=None,
                                          strInFile=self.strRegisteredPath,
                                          strOutPath=output_path, bIsTimeseries=self.bFunc,
                                          strRefFile=self.strTemplate)
